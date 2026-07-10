@@ -1,4 +1,4 @@
-from src.recommender import Song, UserProfile, Recommender
+from src.recommender import Song, UserProfile, Recommender, score_song
 
 def make_small_recommender() -> Recommender:
     songs = [
@@ -59,3 +59,20 @@ def test_explain_recommendation_returns_non_empty_string():
     explanation = rec.explain_recommendation(user, song)
     assert isinstance(explanation, str)
     assert explanation.strip() != ""
+
+
+def test_score_song_gives_partial_credit_for_related_genre():
+    # Mood, energy, and acousticness are identical across all three songs
+    # so any score difference comes only from the genre match.
+    user_prefs = {"genre": "pop", "mood": "energetic", "energy": 0.5, "likes_acoustic": False}
+
+    exact_match_song = {"genre": "pop", "mood": "mismatch", "energy": 0.5, "acousticness": 0.5}
+    related_genre_song = {"genre": "synthwave", "mood": "mismatch", "energy": 0.5, "acousticness": 0.5}
+    unrelated_genre_song = {"genre": "metal", "mood": "mismatch", "energy": 0.5, "acousticness": 0.5}
+
+    exact_score, _ = score_song(user_prefs, exact_match_song)
+    related_score, related_reasons = score_song(user_prefs, related_genre_song)
+    unrelated_score, _ = score_song(user_prefs, unrelated_genre_song)
+
+    assert exact_score > related_score > unrelated_score
+    assert any("related" in reason for reason in related_reasons)

@@ -9,3 +9,11 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
 9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
 10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
+11,Velvet Skyline,Echo & Ivory,r&b,romantic,0.55,92,0.68,0.64,0.30
+12,Dust Road Diner,Cotton Creek,country,nostalgic,0.48,96,0.62,0.45,0.68
+13,Iron Curtain,Graveyard Shift,metal,angry,0.97,168,0.25,0.35,0.03
+14,Paper Boats,Wilhelm Grove,folk,melancholic,0.30,68,0.35,0.30,0.90
+15,Neon Monsoon,Kiraku,k-pop,uplifting,0.88,128,0.90,0.91,0.08
+16,Crosswalk Serenade,Blue Basalt,hip-hop,playful,0.70,96,0.72,0.85,0.12
+17,Salt Water Hymn,Coastal Choir,classical,sad,0.20,56,0.22,0.15,0.95
+18,Firelight Riddim,Sunset Cartel,reggae,carefree,0.55,84,0.80,0.72,0.40
