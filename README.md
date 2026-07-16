@@ -96,12 +96,24 @@ You can add more tests in `tests/test_recommender.py`.
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
 ```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
+Loaded songs: 18
+
+Top recommendations:
+
+1. Sunrise City - Neon Echo (Score: 72.20/100)
+     - Matches your favorite genre (pop) (+65.0)
+
+2. Gym Hero - Max Pulse (Score: 70.45/100)
+     - Matches your favorite genre (pop) (+65.0)
+
+3. Rooftop Lights - Indigo Parade (Score: 41.15/100)
+     - Genre (indie pop) is related to your favorite (pop) (+32.5)
+
+4. Night Drive Loop - Neon Echo (Score: 40.60/100)
+     - Genre (synthwave) is related to your favorite (pop) (+32.5)
+
+5. Neon Monsoon - Kiraku (Score: 38.60/100)
+     - Genre (k-pop) is related to your favorite (pop) (+32.5)
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
@@ -143,6 +155,4 @@ Write 1 to 2 paragraphs here about what you learned:
 
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
-
-
 
