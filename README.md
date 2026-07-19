@@ -189,3 +189,4 @@ Write 1 to 2 paragraphs here about what you learned:
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
 
+My biggest learning moment was understanding how to evaluate datasets. AI tools helped me ensure the factors I used to evaluate my recommendations aligned correctly. I was surprised by how easily numerical data could give accurate recommendations. I would try to personalize the user experience so they could choose which variables should be ranked higher.

@@ -53,6 +53,8 @@ Prompts:
 - Did you add or remove data  
 - Are there parts of musical taste missing in the dataset  
 
+There 18 songs in the catalog that represent the genres rock, ambient, jazz, synthwave, indie pop, indie pop, r&b, country, metal, folk, k-pop, hip-hop, classical, and rage. The moods include happy, chill (×3), intense (×2), relaxed, moody, focused, romantic, nostalgic, angry, melancholic, uplifting, playful, sad, carefree.
+
 ---
 
 ## 5. Strengths  
@@ -65,6 +67,7 @@ Prompts:
 - Any patterns you think your scoring captures correctly  
 - Cases where the recommendations matched your intuition  
 
+Chill Lofi and High-Energy Pop profiles get the most reasonable results, since their genre lives in a larger family cluster (5-7 credit-eligible songs) and their exact-genre picks also happen to land close on mood and energy — matching intuition that "clear, well-represented tastes get well-rounded recommendations.
 ---
 
 ## 6. Limitations and Bias 
@@ -106,6 +109,7 @@ Prompts:
 - Improving diversity among the top results  
 - Handling more complex user tastes  
 
+I would include a more comprehensive recommendation that displays to the user why each song was chosen and what each compenent means. Then, the user would be able to select their preference for what should be ranked higher based on what's more important to them.
 ---
 
 ## 9. Personal Reflection  
@@ -117,3 +121,5 @@ Prompts:
 - What you learned about recommender systems  
 - Something unexpected or interesting you discovered  
 - How this changed the way you think about music recommendation apps  
+
+I learned a lot about how to integrate data sets into a program and understanding how one function impacts another. It really helped me differentiate the purpose of the main.py file, tests, and the recommender.
