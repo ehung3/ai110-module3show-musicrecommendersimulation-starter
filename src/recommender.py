@@ -91,45 +91,71 @@ def load_songs(csv_path: str) -> List[Dict]:
 
 # Genres that share a similar sound/vibe, used for partial credit when a
 # song isn't an exact genre match but is closely related to it.
-GENRE_FAMILIES: Dict[str, set] = {
-    "pop": {"pop", "indie pop", "k-pop", "synthwave"},
-    "indie pop": {"pop", "indie pop", "k-pop", "synthwave"},
-    "k-pop": {"pop", "indie pop", "k-pop", "synthwave"},
-    "synthwave": {"pop", "indie pop", "k-pop", "synthwave"},
-    "lofi": {"lofi", "ambient", "jazz", "folk", "classical"},
-    "ambient": {"lofi", "ambient", "jazz", "folk", "classical"},
-    "jazz": {"lofi", "ambient", "jazz", "folk", "classical"},
-    "classical": {"lofi", "ambient", "jazz", "folk", "classical"},
-    "folk": {"lofi", "ambient", "jazz", "folk", "classical", "country"},
-    "country": {"folk", "country"},
-    "rock": {"rock", "metal"},
-    "metal": {"rock", "metal"},
-    "hip-hop": {"hip-hop", "r&b", "reggae"},
-    "r&b": {"hip-hop", "r&b", "reggae"},
-    "reggae": {"hip-hop", "r&b", "reggae"},
-}
+#
+# Built from an undirected graph (cliques + bridges) instead of a hand-typed
+# dict, so "A relates to B" always implies "B relates to A" by construction --
+# a prior hand-maintained version had folk -> country without the reverse
+# picking up folk's other neighbors, which meant a country fan got zero
+# credit for a jazz song even though a folk fan would have gotten credit for
+# that same song.
+#
+# GENRE_CLIQUES group genres that are mutually, fully related to each other.
+GENRE_CLIQUES: List[set] = [
+    {"pop", "indie pop", "k-pop", "synthwave"},
+    # lofi/ambient/jazz/classical/folk/country: all sit in the catalog's
+    # high-acousticness band (country=0.68, the rest 0.68-0.95), clearly
+    # separated from the produced/pop-rock genres (0.03-0.40) -- country
+    # belongs in this "acoustic roots" clique on the data, not just vibes.
+    {"lofi", "ambient", "jazz", "classical", "folk", "country"},
+    {"rock", "metal"},
+    {"hip-hop", "r&b", "reggae"},
+]
+
+# GENRE_BRIDGES are single, deliberate cross-clique edges for well-established
+# crossover genres, so the smallest clique (rock/metal, 2 catalog songs) isn't
+# permanently stuck with far less credit-eligible surface area than the
+# largest (8 songs). Each bridge is named after a real, commonly cited
+# fusion genre rather than an arbitrary pairing.
+GENRE_BRIDGES: List[Tuple[str, str]] = [
+    ("rock", "country"),      # country rock / outlaw country
+    ("metal", "classical"),   # neoclassical / symphonic metal
+]
+
+def _build_genre_families(cliques: List[set], bridges: List[Tuple[str, str]]) -> Dict[str, set]:
+    families: Dict[str, set] = {}
+    for clique in cliques:
+        for genre in clique:
+            families.setdefault(genre, set()).update(clique)
+    for a, b in bridges:
+        families.setdefault(a, {a}).add(b)
+        families.setdefault(b, {b}).add(a)
+    return families
+
+GENRE_FAMILIES: Dict[str, set] = _build_genre_families(GENRE_CLIQUES, GENRE_BRIDGES)
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
     Scores a single song against user preferences.
     Required by recommend_songs() and src/main.py
 
-    Algorithm Recipe (max 100 points, genre-first hierarchical weighting):
-      - Genre match:        65 pts exact, 32.5 pts (50%) for a related genre
-                             - strongest, most explicit taste signal
-      - Mood match:         20 pts (binary) - real signal, but fuzzier than genre
-      - Energy closeness:   10 pts (distance-based) - a target, not a hard rule
-      - Acousticness fit:    5 pts (distance-based) - soft secondary preference
+    Algorithm Recipe (max 77.5 points, energy-weighted):
+      - Genre match:        32.5 pts exact, 16.25 pts (50%) for a related genre
+                             - halved from its original 65/32.5 split
+      - Mood match:         20 pts (binary) - unchanged
+      - Energy closeness:   20 pts (distance-based) - doubled from its original 10
+      - Acousticness fit:    5 pts (distance-based) - unchanged
 
-    An exact genre match (65) still outweighs the max combined score of
-    every other feature (35), so it can never lose to a song that only
-    matches on mood/energy/acousticness. A related-genre match (32.5) gives
-    partial credit instead of scoring identically to a total mismatch.
+    NOTE: this is no longer a 100-point scale (32.5 + 20 + 20 + 5 = 77.5), and
+    genre no longer dominates by design: an exact genre match (32.5) is now
+    LESS than mood+energy+acoustic combined (45), so a song matching on
+    mood+energy+acoustic alone can outscore a genre-only match. A related-genre
+    match (16.25) still gives partial credit rather than scoring like a total
+    mismatch.
     """
-    GENRE_POINTS = 65
+    GENRE_POINTS = 32.5
     GENRE_PARTIAL_CREDIT = 0.5
     MOOD_POINTS = 20
-    ENERGY_POINTS = 10
+    ENERGY_POINTS = 20
     ACOUSTIC_POINTS = 5
 
     score = 0.0
@@ -188,3 +214,20 @@ def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tup
     """
     scored = [_score_entry(user_prefs, song) for song in songs]
     return sorted(scored, key=itemgetter(1), reverse=True)[:k]
+
+if __name__ == "__main__":
+    from pathlib import Path
+
+    songs_csv = Path(__file__).resolve().parent.parent / "data" / "songs.csv"
+    songs = load_songs(songs_csv)
+
+    user_prefs = {"genre": "pop", "mood": "happy", "energy": 0.8, "likes_acoustic": False}
+    recommendations = recommend_songs(user_prefs, songs, k=5)
+
+    print(f"Loaded {len(songs)} songs from {songs_csv.name}")
+    print(f"\nTop 5 recommendations for {user_prefs}:\n")
+    for rank, (song, score, explanation) in enumerate(recommendations, start=1):
+        print(f"{rank}. {song['title']} - {song['artist']} (Score: {score:.2f}/77.5)")
+        for reason in explanation.split("; "):
+            print(f"     - {reason}")
+        print()

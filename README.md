@@ -96,6 +96,39 @@ You can add more tests in `tests/test_recommender.py`.
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
 ```
+Loaded 18 songs from songs.csv
+
+Top 5 recommendations for {'genre': 'pop', 'mood': 'happy', 'energy': 0.8, 'likes_acoustic': False}:
+
+1. Sunrise City - Neon Echo (Score: 98.90/100)
+     - Matches your favorite genre (pop) (+65.0)
+     - Matches your favorite mood (happy) (+20.0)
+     - Energy (0.82) is close to your target (0.8) (+9.8)
+     - Has a less acoustic, more produced sound, matching your preference (+4.1)
+
+2. Gym Hero - Max Pulse (Score: 78.45/100)
+     - Matches your favorite genre (pop) (+65.0)
+     - Energy (0.93) is close to your target (0.8) (+8.7)
+     - Has a less acoustic, more produced sound, matching your preference (+4.8)
+
+3. Rooftop Lights - Indigo Parade (Score: 65.35/100)
+     - Genre (indie pop) is related to your favorite (pop) (+32.5)
+     - Matches your favorite mood (happy) (+20.0)
+     - Energy (0.76) is close to your target (0.8) (+9.6)
+     - Has a less acoustic, more produced sound, matching your preference (+3.2)
+
+4. Neon Monsoon - Kiraku (Score: 46.30/100)
+     - Genre (k-pop) is related to your favorite (pop) (+32.5)
+     - Energy (0.88) is close to your target (0.8) (+9.2)
+     - Has a less acoustic, more produced sound, matching your preference (+4.6)
+
+5. Night Drive Loop - Neon Echo (Score: 45.90/100)
+     - Genre (synthwave) is related to your favorite (pop) (+32.5)
+     - Energy (0.75) is close to your target (0.8) (+9.5)
+     - Has a less acoustic, more produced sound, matching your preference (+3.9)
+```
+
+```
 Loaded songs: 18
 
 Top recommendations:
